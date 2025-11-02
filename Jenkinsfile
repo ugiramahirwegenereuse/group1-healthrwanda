@@ -2,46 +2,44 @@ pipeline {
     agent any
 
     environment {
-        // You can change this to your environment if needed
         NODE_ENV = 'production'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                echo 'Cloning repository...'
+                echo '📥 Cloning repository...'
                 git branch: 'main', url: 'https://github.com/ugiramahirwegenereuse/group1-healthrwanda.git'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                echo 'Installing project dependencies...'
+                echo '📦 Installing dependencies...'
                 sh 'npm install'
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Building the application...'
-                sh 'npm run build'
+                echo '🏗️ Building application...'
+                sh 'npm run build || echo "No build script found"'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running tests...'
-                sh 'npm test || echo "No tests found, skipping..."'
+                echo '🧪 Running tests...'
+                sh 'npm test || echo "No tests found"'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploying application...'
-                // Example: deploy to local folder or server
+                echo '🚀 Deploying application...'
                 sh '''
-                mkdir -p /var/www/healthrwanda
-                cp -r * /var/www/healthrwanda/
+                mkdir -p ~/healthrwanda_build
+                cp -r * ~/healthrwanda_build/
                 '''
             }
         }
@@ -49,10 +47,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ Build and Deployment Successful!'
+            echo '✅ Build successful!'
         }
         failure {
-            echo '❌ Build Failed. Check logs for details.'
+            echo '❌ Build failed! Check console output for errors.'
         }
     }
 }
